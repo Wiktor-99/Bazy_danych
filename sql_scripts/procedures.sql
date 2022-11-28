@@ -72,14 +72,15 @@ CREATE OR REPLACE PROCEDURE db_user1.add_room(
 p_id_hotelu number,
 p_ilosc_osob number,
 p_cena number,
+p_standard varchar,
 p_opis varchar,
 p_dostepny number
 )
 AS
 BEGIN
-    IF hotel_istnieje(p_id_hotelu) THEN
+    IF hotel_istnieje(p_id_hotelu) > 0 THEN
         INSERT INTO db_user1.tb_pokoje
-        VALUES(db_user1.sq_pokoje.NEXTVAL,p_id_pokoju,p_id_hotelu,p_ilosc_osob,p_cena,p_opis,p_dostepny)
+        VALUES(db_user1.sq_pokoje.NEXTVAL, p_id_hotelu, p_ilosc_osob, p_cena, p_standard, p_opis, p_dostepny);
     END IF;
 
     COMMIT;
@@ -112,7 +113,7 @@ BEGIN
     SELECT COUNT(*) into ilosc_rezerwacji
     FROM db_user1.tb_rezerwacje WHERE p_id_pokoju = id_pokoju
     and ((data_od >= p_data_od and data_od<=p_data_do))
-    or (data_do >= p_data_od and data_do<= p_data_do)
+    or (data_do >= p_data_od and data_do<= p_data_do);
 
     IF ilosc_rezerwacji > 0 THEN
     stan := 0;
@@ -137,12 +138,12 @@ create or REPLACE PROCEDURE db_user1.dodaj_rezerwacje
 
 AS
 BEGIN
-    IF pokoj_istnieje(p_id_pokoju) and (p_data_od != p_data_do and p_data_do > p_data_od) THEN
+    IF pokoj_istnieje(p_id_pokoju) > 0 and (p_data_od != p_data_do and p_data_do > p_data_od) THEN
 
-    IF sprawdz_dostepnosc(p_id_pokoju,p_data_od,p_data_do) = 1 THEN
+    IF sprawdz_dostepnosc(p_id_pokoju,p_data_od,p_data_do) > 0 THEN
 
     INSERT INTO db_user1.tb_rezerwacje
-    VALUES(db_user1.sq_rezerwacje.NEXTVAL,p_id_pokoju,p_id_klienta,p_id_wyzywienia,p_data_od,p_data_do)
+    VALUES(db_user1.sq_rezerwacje.NEXTVAL,p_id_pokoju,p_id_klienta,p_id_wyzywienia,p_data_od,p_data_do);
     END IF;
 
     END IF;
