@@ -112,8 +112,8 @@ ilosc_rezerwacji number;
 BEGIN
     SELECT COUNT(*) into ilosc_rezerwacji
     FROM db_user1.tb_rezerwacje WHERE p_id_pokoju = id_pokoju
-    and ((data_od >= p_data_od and data_od<=p_data_do))
-    or (data_do >= p_data_od and data_do<= p_data_do);
+    and ((data_od >= p_data_od and data_od<=p_data_do)
+    or (data_do >= p_data_od and data_do<= p_data_do));
 
     IF ilosc_rezerwacji > 0 THEN
     stan := 0;
