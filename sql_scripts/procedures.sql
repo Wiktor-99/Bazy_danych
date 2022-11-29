@@ -151,3 +151,26 @@ BEGIN
     COMMIT;
     END;
 /
+
+create or replace PROCEDURE db_user1.dodaj_klienta
+(
+p_login in varchar(32),
+p_haslo in varchar(32),
+p_imie in varchar(32),
+p_nazwisko in varchar(32),
+p_mail in varchar(32),
+p_nr_telefonu in varchar(32)
+)
+AS
+id number;
+BEGIN
+    id := db_user1.sq_klient.NEXTVAL
+    INSERT INTO db_user1.tb_klienci_dane_podstawowe
+    VALUES(id,p_imie,p_nazwisko,p_mail,p_nr_telefonu);
+
+    INSERT INTO db_user1.tb_klienci_dane_logowania
+    VALUES(id,p_login,p_haslo);
+
+    COMMIT;
+END;
+/

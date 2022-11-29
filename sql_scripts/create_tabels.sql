@@ -34,7 +34,7 @@ create table db_user1.tb_hotele (
     standard number not null
 );
 
-----------TWORZENIE TABELI POKOJE-----------------
+-- ----------TWORZENIE TABELI POKOJE-----------------
 create table db_user1.tb_pokoje (
     id_pokoju number primary key,
     id_hotelu number not null,
@@ -47,8 +47,8 @@ create table db_user1.tb_pokoje (
 );
 
 
-----------TWORZENIE TABELI DLA KLIENTÓW-----------------
-----------DANE PODSTAWOWE-----------------
+-- ----------TWORZENIE TABELI DLA KLIENTÓW-----------------
+-- ----------DANE PODSTAWOWE-----------------
 create table db_user1.tb_klienci_dane_podstawowe (
     id_klienta number primary key,
     imie varchar(32) not null,
@@ -56,7 +56,7 @@ create table db_user1.tb_klienci_dane_podstawowe (
     mail varchar(32) unique not null,
     nr_telefonu varchar(32) unique not null
 );
-----------DANE LOGOWANIA-----------------
+-- ----------DANE LOGOWANIA-----------------
 create table db_user1.tb_klienci_dane_logowania (
     id_klienta number primary key,
     login varchar(32) unique not null,
@@ -69,14 +69,14 @@ from db_user1.tb_klienci_dane_logowania FULL join db_user1.tb_klienci_dane_podst
 on db_user1.tb_klienci_dane_podstawowe.id_klienta = db_user1.tb_klienci_dane_logowania.id_klienta;
 
 
-----------TABELA WYZYWIENIE-----------------
+-- ----------TABELA WYZYWIENIE-----------------
 create table db_user1.tb_wyzywienie (
     id_wyzywienia number primary key,
     cena number,
     typ varchar(100),
     opis varchar(150)
 );
-----------TABELA REZERWACJE-----------------
+-- ----------TABELA REZERWACJE-----------------
 create table db_user1.tb_rezerwacje (
     id_rezerwacji number primary key,
     id_pokoju number not null,
