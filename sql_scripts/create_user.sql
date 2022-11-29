@@ -9,3 +9,4 @@ grant create procedure to db_user1;
 grant create materialized view to db_user1;
 grant create view to db_user1;
 grant unlimited tablespace to db_user1;
+grant create database link to db_user1;
