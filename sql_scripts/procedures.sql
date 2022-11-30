@@ -18,8 +18,10 @@ AS
 
 BEGIN
 
-    INSERT INTO db_user1.tb_hotele
-    VALUES(db_user1.sq_hotele.NEXTVAL,p_nazwa,p_kraj,p_miasto,p_ulica,p_nr_domu,p_kod_pocztowy,p_nr_telefonu,p_mail,p_ocena_gosci,p_standard);
+    --INSERT INTO db_user1.tb_hotele@orcl1
+    --VALUES(db_user1.sq_hotele.NEXTVAL@orcl1,p_nazwa,p_kraj,p_miasto,p_ulica,p_nr_domu,p_kod_pocztowy,p_nr_telefonu,p_mail,p_ocena_gosci,p_standard);
+    INSERT INTO db_user1.tb_hotele@orcl1
+    VALUES(db_user1.sq_hotele.NEXTVAL@orcl1,p_nazwa,p_kraj,p_miasto,p_ulica,p_nr_domu,p_kod_pocztowy,p_nr_telefonu,p_mail,p_ocena_gosci,p_standard);
 
     COMMIT;
 END;
@@ -34,12 +36,16 @@ ilosc_hotel number;
 
 BEGIN
     SELECT COUNT(*) into ilosc_hotel from db_user1.tb_hotele WHERE p_id_hotelu = id_hotelu;
-
     IF ilosc_hotel > 0 THEN
-    stan := 0;
+    stan := 1;
 
     ELSE 
-    stan := 1;
+    SELECT COUNT(*) into ilosc_hotel from db_user1.tb_hotele@orcl1 WHERE p_id_hotelu = id_hotelu;
+    IF ilosc_hotel > 0 THEN
+    stan := 2;
+    ELSE
+    stan := 0;
+    END IF;
 
 END IF;
     return (stan);
@@ -60,7 +66,12 @@ BEGIN
     stan := 1;
 
     ELSE 
+    SELECT COUNT(*) into ilosc_pokoj from db_user1.tb_pokoje WHERE p_id_pokoju = id_pokoju;
+    IF ilosc_pokoj > 0 THEN
+    stan := 2;
+    ELSE
     stan := 0;
+    END IF;
 
 END IF;
     return (stan);
@@ -68,7 +79,7 @@ END;
 
 /
 ----------PROCEDURA DODAJ POKOJ-----------------
-CREATE OR REPLACE PROCEDURE db_user1.add_room(
+CREATE OR REPLACE PROCEDURE db_user1.dodaj_pokoj(
 p_id_hotelu number,
 p_ilosc_osob number,
 p_cena number,
@@ -77,10 +88,16 @@ p_opis varchar,
 p_dostepny number
 )
 AS
+idx number;
 BEGIN
-    IF hotel_istnieje(p_id_hotelu) > 0 THEN
+    idx := hotel_istnieje(p_id_hotelu);
+    IF idx = 1 THEN
         INSERT INTO db_user1.tb_pokoje
         VALUES(db_user1.sq_pokoje.NEXTVAL, p_id_hotelu, p_ilosc_osob, p_cena, p_standard, p_opis, p_dostepny);
+    IF idx = 2 THEN
+        INSERT INTO db_user1.tb_pokoje@orcl1
+        VALUES(db_user1.sq_pokoje.NEXTVAL, p_id_hotelu, p_ilosc_osob, p_cena, p_standard, p_opis, p_dostepny);
+    END IF;
     END IF;
 
     COMMIT;
@@ -108,12 +125,22 @@ RETURN number
 IS
 stan number;
 ilosc_rezerwacji number;
-
+idx number;
 BEGIN
-    SELECT COUNT(*) into ilosc_rezerwacji
-    FROM db_user1.tb_rezerwacje WHERE p_id_pokoju = id_pokoju
-    and ((data_od >= p_data_od and data_od<=p_data_do)
-    or (data_do >= p_data_od and data_do<= p_data_do));
+    idx := pokoj_istnieje(p_id_pokoju);
+    IF idx = 1 THEN
+        SELECT COUNT(*) into ilosc_rezerwacji
+        FROM db_user1.tb_rezerwacje WHERE (p_id_pokoju = id_pokoju)
+        and ((data_od >= p_data_od and data_od<=p_data_do)
+        or (data_do >= p_data_od and data_do<= p_data_do));
+    END IF;
+
+    IF idx = 2 THEN
+        SELECT COUNT(*) into ilosc_rezerwacji
+        FROM db_user1.tb_rezerwacje@orcl1 WHERE (p_id_pokoju = id_pokoju)
+        and ((data_od >= p_data_od and data_od<=p_data_do)
+        or (data_do >= p_data_od and data_do<= p_data_do));
+    END IF;
 
     IF ilosc_rezerwacji > 0 THEN
     stan := 0;
@@ -137,8 +164,11 @@ create or REPLACE PROCEDURE db_user1.dodaj_rezerwacje
 )
 
 AS
+idx number;
 BEGIN
-    IF pokoj_istnieje(p_id_pokoju) > 0 and (p_data_od != p_data_do and p_data_do > p_data_od) THEN
+    idx := pokoj_istnieje(p_id_pokoju);
+
+    IF idx > 0 and (p_data_od != p_data_do and p_data_do > p_data_od) THEN
 
     IF sprawdz_dostepnosc(p_id_pokoju,p_data_od,p_data_do) > 0 THEN
 
@@ -154,21 +184,21 @@ BEGIN
 
 create or replace PROCEDURE db_user1.dodaj_klienta
 (
-p_login in varchar(32),
-p_haslo in varchar(32),
-p_imie in varchar(32),
-p_nazwisko in varchar(32),
-p_mail in varchar(32),
-p_nr_telefonu in varchar(32)
+p_login in varchar,
+p_haslo in varchar,
+p_imie in varchar,
+p_nazwisko in varchar,
+p_mail in varchar,
+p_nr_telefonu in varchar
 )
 AS
 id number;
 BEGIN
-    id := db_user1.sq_klient.NEXTVAL
+    id := db_user1.sq_klient.NEXTVAL;
     INSERT INTO db_user1.tb_klienci_dane_podstawowe
     VALUES(id,p_imie,p_nazwisko,p_mail,p_nr_telefonu);
 
-    INSERT INTO db_user1.tb_klienci_dane_logowania
+    INSERT INTO db_user1.tb_klienci_dane_logowania@orcl1
     VALUES(id,p_login,p_haslo);
 
     COMMIT;
