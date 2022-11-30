@@ -21,7 +21,7 @@ BEGIN
     --INSERT INTO db_user1.tb_hotele@orcl1
     --VALUES(db_user1.sq_hotele.NEXTVAL@orcl1,p_nazwa,p_kraj,p_miasto,p_ulica,p_nr_domu,p_kod_pocztowy,p_nr_telefonu,p_mail,p_ocena_gosci,p_standard);
     INSERT INTO db_user1.tb_hotele@orcl1
-    VALUES(db_user1.sq_hotele.NEXTVAL@orcl1,p_nazwa,p_kraj,p_miasto,p_ulica,p_nr_domu,p_kod_pocztowy,p_nr_telefonu,p_mail,p_ocena_gosci,p_standard);
+    VALUES(db_user1.sq_hotele_s.NEXTVAL,p_nazwa,p_kraj,p_miasto,p_ulica,p_nr_domu,p_kod_pocztowy,p_nr_telefonu,p_mail,p_ocena_gosci,p_standard);
 
     COMMIT;
 END;
@@ -93,10 +93,10 @@ BEGIN
     idx := hotel_istnieje(p_id_hotelu);
     IF idx = 1 THEN
         INSERT INTO db_user1.tb_pokoje
-        VALUES(db_user1.sq_pokoje.NEXTVAL, p_id_hotelu, p_ilosc_osob, p_cena, p_standard, p_opis, p_dostepny);
+        VALUES(db_user1.sq_pokoje_s.NEXTVAL, p_id_hotelu, p_ilosc_osob, p_cena, p_standard, p_opis, p_dostepny);
     IF idx = 2 THEN
         INSERT INTO db_user1.tb_pokoje@orcl1
-        VALUES(db_user1.sq_pokoje.NEXTVAL, p_id_hotelu, p_ilosc_osob, p_cena, p_standard, p_opis, p_dostepny);
+        VALUES(db_user1.sq_pokoje_s.NEXTVAL, p_id_hotelu, p_ilosc_osob, p_cena, p_standard, p_opis, p_dostepny);
     END IF;
     END IF;
 
@@ -115,7 +115,7 @@ AS
 
 BEGIN
     INSERT INTO db_user1.tb_wyzywienie
-    VALUES(db_user1.sq_wyzywienie.NEXTVAL,p_cena,p_typ,p_opis);
+    VALUES(db_user1.sq_wyzywienie_s.NEXTVAL,p_cena,p_typ,p_opis);
 
     COMMIT;
 END;
@@ -173,7 +173,7 @@ BEGIN
     IF sprawdz_dostepnosc(p_id_pokoju,p_data_od,p_data_do) > 0 THEN
 
     INSERT INTO db_user1.tb_rezerwacje
-    VALUES(db_user1.sq_rezerwacje.NEXTVAL,p_id_pokoju,p_id_klienta,p_id_wyzywienia,p_data_od,p_data_do);
+    VALUES(db_user1.sq_rezerwacje_s.NEXTVAL,p_id_pokoju,p_id_klienta,p_id_wyzywienia,p_data_od,p_data_do);
     END IF;
 
     END IF;
@@ -194,7 +194,7 @@ p_nr_telefonu in varchar
 AS
 id number;
 BEGIN
-    id := db_user1.sq_klient.NEXTVAL;
+    id := db_user1.sq_klient_s.NEXTVAL;
     INSERT INTO db_user1.tb_klienci_dane_podstawowe
     VALUES(id,p_imie,p_nazwisko,p_mail,p_nr_telefonu);
 
