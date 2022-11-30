@@ -1,25 +1,8 @@
 drop table db_user1.tb_pokoje;
-drop table db_user1.tb_hotele;
 drop table db_user1.tb_klienci_dane_podstawowe;
 drop table db_user1.tb_klienci_dane_logowania;
 drop view db_user1.tb_klienci;
-drop table db_user1.tb_wyzywienie;
 drop table db_user1.tb_rezerwacje;
-
-----------TWORZENIE TABELI HOTELE-----------------
-create table db_user1.tb_hotele (
-    id_hotelu number primary key,
-    nazwa varchar(32) not null,
-    kraj varchar(32) not null,
-    miasto varchar(32) not null,
-    ulica varchar(32) not null,
-    nr_domu number not null, 
-    kod_pocztowy varchar(32) not null,
-    nr_telefonu number not null,
-    mail varchar(32) not null,
-    ocena_gosci number,
-    standard number not null
-);
 
 -- ----------TWORZENIE TABELI POKOJE-----------------
 create table db_user1.tb_pokoje (
@@ -32,7 +15,6 @@ create table db_user1.tb_pokoje (
     dostepny number(1) not null,
     constraint fk_id_hotelu foreign key (id_hotelu) references db_user1.tb_hotele (id_hotelu)
 );
-
 
 -- ----------TWORZENIE TABELI DLA KLIENTÓW-----------------
 -- ----------DANE PODSTAWOWE-----------------
@@ -55,14 +37,6 @@ select db_user1.tb_klienci_dane_podstawowe.*, db_user1.tb_klienci_dane_logowania
 from db_user1.tb_klienci_dane_logowania FULL join db_user1.tb_klienci_dane_podstawowe
 on db_user1.tb_klienci_dane_podstawowe.id_klienta = db_user1.tb_klienci_dane_logowania.id_klienta;
 
-
--- ----------TABELA WYZYWIENIE-----------------
-create table db_user1.tb_wyzywienie (
-    id_wyzywienia number primary key,
-    cena number,
-    typ varchar(100),
-    opis varchar(150)
-);
 -- ----------TABELA REZERWACJE-----------------
 create table db_user1.tb_rezerwacje (
     id_rezerwacji number primary key,
