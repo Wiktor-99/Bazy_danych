@@ -34,5 +34,5 @@ with primary key
 including new values;
 
 grant select on db_user1.MLOG$_tb_hotele to db_user1;
-grant select on db_user1.MLOG$_tb_wyzywienie to db_user1
+grant select on db_user1.MLOG$_tb_wyzywienie to db_user1;
 commit;
