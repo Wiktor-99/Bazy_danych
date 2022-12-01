@@ -173,16 +173,19 @@ create or REPLACE PROCEDURE db_user1.dodaj_rezerwacje
 
 AS
 idx number;
+hotel_id number;
 BEGIN
     idx := pokoj_istnieje(p_id_pokoju);
 
-    IF idx > 0 and (p_data_od != p_data_do and p_data_do > p_data_od) THEN
+    IF idx > 0 and ((data_od > p_data_od and data_od>=p_data_do) or (data_do <= p_data_od and data_do< p_data_do)) THEN
         IF sprawdz_dostepnosc(p_id_pokoju,p_data_od,p_data_do) > 0 THEN
+            select id_hotelu into hotel_id from db_user1.tb_hotele WHERE p_id_hotelu = id_hotelu;
+
+
             INSERT INTO db_user1.tb_rezerwacje
             VALUES(db_user1.sq_rezerwacje_s.NEXTVAL,p_id_pokoju,p_id_klienta,p_id_wyzywienia,p_data_od,p_data_do);
         END IF;
     END IF;
-
     COMMIT;
 END;
 /
