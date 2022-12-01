@@ -1,8 +1,8 @@
+drop table db_user1.tb_rezerwacje;
 drop table db_user1.tb_pokoje;
 drop table db_user1.tb_klienci_dane_podstawowe;
 drop table db_user1.tb_klienci_dane_logowania;
 drop view db_user1.tb_klienci;
-drop table db_user1.tb_rezerwacje;
 
 -- ----------TWORZENIE TABELI POKOJE-----------------
 create table db_user1.tb_pokoje (
