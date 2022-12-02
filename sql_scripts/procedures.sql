@@ -209,11 +209,11 @@ AS
 id number;
 BEGIN
     id := db_user1.sq_klient_s.NEXTVAL;
-    INSERT INTO db_user1.tb_klienci_dane_podstawowe
-    VALUES(id,p_imie,p_nazwisko,p_mail,p_nr_telefonu);
+    INSERT INTO db_user1.tb_klienci_podstawowe
+    VALUES(id, p_imie,p_nazwisko, p_mail,p_nr_telefonu);
 
-    INSERT INTO db_user1.tb_klienci_dane_logowania@orcl
-    VALUES(id,p_login,p_haslo);
+    INSERT INTO db_user1.tb_klienci_logowanie
+    VALUES(id, p_login, p_haslo);
 
     COMMIT;
 END;
