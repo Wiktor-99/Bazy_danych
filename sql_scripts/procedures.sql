@@ -62,13 +62,13 @@ stan number;
 ilosc_pokoj number;
 
 BEGIN
-    SELECT COUNT(*) into ilosc_pokoj from db_user1.tb_pokoje WHERE p_id_pokoju = id_pokoju;
+    SELECT COUNT(*) into ilosc_pokoj from db_user1.tb_pokoje_1 WHERE p_id_pokoju = id_pokoju;
 
     IF ilosc_pokoj > 0 THEN
     stan := 1;
 
     ELSE 
-    SELECT COUNT(*) into ilosc_pokoj from db_user1.tb_pokoje WHERE p_id_pokoju = id_pokoju;
+    SELECT COUNT(*) into ilosc_pokoj from db_user1.tb_pokoje_2 WHERE p_id_pokoju = id_pokoju;
     IF ilosc_pokoj > 0 THEN
     stan := 2;
     ELSE
@@ -127,6 +127,7 @@ BEGIN
 
     COMMIT;
 END;
+
 /
 CREATE OR REPLACE FUNCTION db_user1.sprawdz_dostepnosc(p_id_pokoju in number,p_data_od in date,p_data_do in date)
 RETURN number
@@ -138,16 +139,14 @@ BEGIN
     idx := pokoj_istnieje(p_id_pokoju);
     IF idx = 1 THEN
         SELECT COUNT(*) into ilosc_rezerwacji
-        FROM db_user1.tb_rezerwacje WHERE (p_id_pokoju = id_pokoju)
-        and ((data_od >= p_data_od and data_od<=p_data_do)
-        or (data_do >= p_data_od and data_do<= p_data_do));
+        FROM db_user1.tb_rezerwacje_1 WHERE (p_id_pokoju = id_pokoju)
+        AND ((data_od > p_data_od and data_od>=p_data_do) or (data_do <= p_data_od and data_do< p_data_do));
     END IF;
 
     IF idx = 2 THEN
         SELECT COUNT(*) into ilosc_rezerwacji
-        FROM db_user1.tb_rezerwacje@orcl WHERE (p_id_pokoju = id_pokoju)
-        and ((data_od >= p_data_od and data_od<=p_data_do)
-        or (data_do >= p_data_od and data_do<= p_data_do));
+        FROM db_user1.tb_rezerwacje_2 WHERE (p_id_pokoju = id_pokoju)
+        AND ((data_od > p_data_od and data_od>=p_data_do) or (data_do <= p_data_od and data_do< p_data_do));
     END IF;
 
     IF ilosc_rezerwacji > 0 THEN
@@ -177,13 +176,20 @@ hotel_id number;
 BEGIN
     idx := pokoj_istnieje(p_id_pokoju);
 
-    IF idx > 0 and ((data_od > p_data_od and data_od>=p_data_do) or (data_do <= p_data_od and data_do< p_data_do)) THEN
+    IF idx > 0 THEN
         IF sprawdz_dostepnosc(p_id_pokoju,p_data_od,p_data_do) > 0 THEN
-            select id_hotelu into hotel_id from db_user1.tb_hotele WHERE p_id_hotelu = id_hotelu;
+            select db_user1.tb_pokoje_1.id_hotelu into hotel_id from db_user1.tb_pokoje_1
+            inner join db_user1.tb_pokoje_2 on db_user1.tb_pokoje_1.id_pokoju = db_user1.tb_pokoje_2.id_pokoju
+            where db_user1.tb_pokoje_1.id_pokoju = p_id_pokoju;
 
-
-            INSERT INTO db_user1.tb_rezerwacje
-            VALUES(db_user1.sq_rezerwacje_s.NEXTVAL,p_id_pokoju,p_id_klienta,p_id_wyzywienia,p_data_od,p_data_do);
+            IF hotel_id = 1 THEN
+                INSERT INTO db_user1.tb_rezerwacje_1
+                VALUES(db_user1.sq_rezerwacje_s.NEXTVAL,p_id_pokoju,p_id_klienta,p_id_wyzywienia,p_data_od,p_data_do);
+            END IF;
+            IF hotel_id = 2 THEN
+                INSERT INTO db_user1.tb_rezerwacje_2
+                VALUES(db_user1.sq_rezerwacje_s.NEXTVAL,p_id_pokoju,p_id_klienta,p_id_wyzywienia,p_data_od,p_data_do);
+            END IF;
         END IF;
     END IF;
     COMMIT;
