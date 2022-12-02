@@ -18,3 +18,8 @@ create view db_user1.pokoje as
    select * from db_user1.tb_pokoje_2
    union all
    select * from db_user1.tb_pokoje_1;
+
+create view db_user1.rezerwacje as
+   select * from db_user1.tb_rezerwacje_2
+   union all
+   select * from db_user1.tb_rezerwacje_1;

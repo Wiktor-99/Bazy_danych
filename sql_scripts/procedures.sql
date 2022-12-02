@@ -140,7 +140,7 @@ BEGIN
     IF idx = 1 THEN
         SELECT COUNT(*) into ilosc_rezerwacji
         FROM db_user1.tb_rezerwacje_1 WHERE (p_id_pokoju = id_pokoju)
-        AND ((data_od > p_data_od and data_od>=p_data_do) or (data_do <= p_data_od and data_do< p_data_do));
+        AND ((data_od > p_data_od and data_od >=p_data_do) or (data_do <= p_data_od and data_do< p_data_do));
     END IF;
 
     IF idx = 2 THEN
@@ -150,10 +150,10 @@ BEGIN
     END IF;
 
     IF ilosc_rezerwacji > 0 THEN
-    stan := 0;
+    stan := 1;
 
     ELSE
-    stan := 1;
+    stan := 0;
 
     END IF;
 

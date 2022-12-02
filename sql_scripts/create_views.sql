@@ -11,3 +11,4 @@ create view db_user1.tb_klienci as
 select db_user1.tb_klienci_podstawowe.*, db_user1.tb_klienci_logowanie.haslo, db_user1.tb_klienci_logowanie.login
 from db_user1.tb_klienci_logowanie FULL join db_user1.tb_klienci_podstawowe
 on db_user1.tb_klienci_logowanie.id_klienta = db_user1.tb_klienci_logowanie.id_klienta;
+
