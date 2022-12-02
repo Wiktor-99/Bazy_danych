@@ -178,10 +178,7 @@ BEGIN
 
     IF idx > 0 THEN
         IF sprawdz_dostepnosc(p_id_pokoju,p_data_od,p_data_do) > 0 THEN
-            select db_user1.tb_pokoje_1.id_hotelu into hotel_id from db_user1.tb_pokoje_1
-            inner join db_user1.tb_pokoje_2 on db_user1.tb_pokoje_1.id_pokoju = db_user1.tb_pokoje_2.id_pokoju
-            where db_user1.tb_pokoje_1.id_pokoju = p_id_pokoju;
-
+            select id_hotelu into hotel_id from db_user1.pokoje where id_pokoju = p_id_pokoju;
             IF hotel_id = 1 THEN
                 INSERT INTO db_user1.tb_rezerwacje_1
                 VALUES(db_user1.sq_rezerwacje_s.NEXTVAL,p_id_pokoju,p_id_klienta,p_id_wyzywienia,p_data_od,p_data_do);
